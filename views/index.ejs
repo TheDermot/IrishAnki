@@ -1,0 +1,62 @@
+<% layout('layouts/boilerplate') %>
+<link rel="stylesheet" href="/stylesheets/home.css" />
+<div class="page-background vh-100">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">Irish Anki</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+          <% if (user) { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/logout">Logout</a>
+          </li>
+          <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/login">Login</a>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-9 text-align-left">
+        <h1>Reviving Irish Starts Here!</h1>
+        <p>
+          Welcome to Insert Name, a unique platform designed to enhance your Irish language learning experience! Seamlessly integrated with a Chrome
+          extension, our website empowers users to submit new Irish words they come across directly to our database. These words are then displayed on
+          the site, giving learners the opportunity to create personalized Anki flashcards and track their progress.
+        </p>
+        <% if (user) { %>
+        <p>Click here to see your knowledge</p>
+        <a href="/<%- user.googleId %>/known_words" class="btn btn-primary">Learn!</a>
+        <% } else { %>
+        <p>Sign up easily with your Google Account</p>
+        <a href="/auth/register" class="btn btn-primary">Signup</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

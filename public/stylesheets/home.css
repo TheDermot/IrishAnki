@@ -1,0 +1,37 @@
+:root {
+  --gold: #a58c47;
+  --green: #2e5f3d;
+}
+.page-background {
+  background-image: url('/images/irishHome.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: 'Courier New', Courier, monospace;
+}
+.navbar {
+  background: transparent;
+}
+h1 {
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 3rem;
+}
+p {
+  color: aliceblue;
+  width: 75%;
+}
+.nav-link {
+  color: antiquewhite;
+  font-weight: 400;
+}
+.navbar-brand {
+  color: antiquewhite;
+  font-size: 1.5rem;
+}
+.btn-primary {
+  background-color: var(--gold);
+  border-color: white;
+}
+.btn-primary:hover {
+  background-color: var(--gold);
+}

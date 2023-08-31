@@ -1,0 +1,55 @@
+:root {
+  --gold: #a58c47;
+  --green: #2e5f3dd8;
+  --orange: rgba(249, 144, 7, 0.922);
+}
+body {
+  background: var(--green);
+}
+.card {
+  box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+
+a {
+  color: #02af74;
+  text-decoration: none;
+}
+
+.word-box .card {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+}
+
+.dropdown-toggle,
+.newWord,
+.submit {
+  background-color: var(--orange) !important;
+  border: white;
+}
+.dropdown-toggle:hover,
+.newWord:hover,
+.submit:hover {
+  background-color: var(--gold) !important;
+}
+.pushAnki {
+  background-color: var(--gold) !important;
+  border: white;
+}
+.pushAnki:hover {
+  opacity: 0.8;
+}
+
+.navbar {
+  font-family: 'Courier New', Courier, monospace;
+}
+.nav-link {
+  color: antiquewhite;
+  font-weight: 400;
+}
+.navbar-brand,
+.word-count {
+  color: antiquewhite;
+  font-size: 1.5rem;
+  font-family: 'Courier New', Courier, monospace;
+}

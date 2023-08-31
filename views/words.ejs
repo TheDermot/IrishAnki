@@ -1,0 +1,596 @@
+<% layout('layouts/boilerplate') %>
+<head>
+  <link rel="stylesheet" href="/stylesheets/words.css" />
+</head>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#">Irish Anki</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contact</a>
+        </li>
+        <% if (user) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/auth/logout">Logout</a>
+        </li>
+        <% } else { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/auth/login">Login</a>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- User page can show recently added words-->
+<section class="section">
+  <div class="container">
+    <div class="justify-content-center row">
+      <div class="col-lg-12">
+        <div class="mb-4">
+          <form id="searchFilter" action="#" class="">
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="">
+                  <input id="search" placeholder="Search for word..." type="search" class="form-control" />
+                  <input type="hidden" id="initialSortMode" value="<%- initialSortMode %>" />
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="">
+                  <select class="form-select" data-trigger="true" name="choices-single-location" id="filter" aria-label="Default select example">
+                    <option value="A">All Words</option>
+                    <option value="K">Known Words</option>
+                    <option value="UK">Unknown Words</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-auto">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sort
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="#" id="sortAlphabetical">Alphabetical</a></li>
+                    <li><a class="dropdown-item" href="#" id="sortTimestamp">Timestamp</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-auto ms-auto">
+                <button type="button" class="btn btn-primary newWord" data-bs-toggle="modal" data-bs-target="#addWordModal">Add New Word</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Add Word Modal -->
+    <div class="modal fade" id="addWordModal" tabindex="-1" aria-labelledby="addWordModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addWordModalLabel">Add New Word</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="addWord" method="POST" action="http://localhost:8080/words">
+              <label for="text">Enter Text</label>
+              <input type="text" id="text" name="text" class="form-control" />
+              <label for="definition">Enter Definition</label>
+              <input type="text" id="definition" name="definition" class="form-control" />
+              <label for="grammar">Enter Grammar</label>
+              <input type="text" id="grammar" name="grammar" class="form-control" />
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="known" name="known" />
+                <label class="form-check-label" for="known">Known Word</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div id="addWordFeedback" class="mt-2 me-auto"></div>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="addWord" class="btn btn-primary submit">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-lg-12">
+        <div class="row me-0">
+          <div class="word-count col-auto"><span id="totalCount">Total Words: <%= words.length %></span></div>
+          <button type="button" class="btn btn-primary pushAnki col-auto" data-username="<%= user.name %>">Push to Anki</button>
+        </div>
+        <div class="word-list">
+          <% if(words) { words.reverse(); words.forEach(word => { %>
+          <div
+            class="word-box card mt-4"
+            data-edit="<%- word.editUpdated %>"
+            data-known="<%- word.known %>"
+            data-timestamp="<%- word.timestamp %>"
+            data-word-id="<%- word.id %>"
+          >
+            <div class="p-4 card-body">
+              <div class="align-items-center row">
+                <div class="col-lg-4">
+                  <div>
+                    <h2 class="word"><%- word.word %></h2>
+                  </div>
+                </div>
+                <div class="col-lg-4 border-start border-end">
+                  <div class="word-content mt-3 mt-lg-0">
+                    <p class="definition"><%- word.definition %></p>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="word-content mt-3 mt-lg-0">
+                    <p class="grammar"><%- word.grammar %></p>
+                  </div>
+                </div>
+                <div class="col-lg-auto ms-auto">
+                  <div>
+                    <i
+                      class="fa-solid fa-pen-to-square me-3"
+                      style="color: #2e5f3d; cursor: pointer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editWordModal-<%- word.id %>"
+                    ></i>
+                    <i
+                      class="fa-solid fa-trash-can"
+                      style="color: #d05825; cursor: pointer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteConfirmationModal-<%- word.id %>"
+                    ></i>
+                  </div>
+                </div>
+                <!-- Edit Word Modal -->
+                <div
+                  class="modal fade"
+                  id="editWordModal-<%- word.id %>"
+                  tabindex="-1"
+                  aria-labelledby="editWordModalLabel-<%- word.id %>"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="editWordModalLabel-<%- word.id %>">Edit <%- word.word %></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form id="editWordForm-<%- word.id %>" method="POST" action="/words/<%- word.id %>">
+                          <label for="word">Enter Word</label>
+                          <input type="text" id="word" name="word" value="<%- word.word %>" class="form-control" />
+                          <label for="definition">Enter Definition</label>
+                          <input type="text" id="definition" name="definition" value="<%- word.definition %>" class="form-control" />
+                          <label for="grammar">Enter Grammar</label>
+                          <input type="text" id="grammar" name="grammar" value="<%- word.grammar %>" class="form-control" />
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="known" name="known" <%= word.known ? 'checked' : '' %> />
+                            <label class="form-check-label" for="known">Known Word</label>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary editWordBtn">Save Changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Delete Confirmation Modal -->
+                <div
+                  class="modal fade"
+                  id="deleteConfirmationModal-<%- word.id %>"
+                  tabindex="-1"
+                  aria-labelledby="deleteConfirmationModalLabel-<%- word.id %>"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteConfirmationModalLabel-<%- word.id %>">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to delete the word "<%- word.word %>"?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger deleteWordBtn" data-word-id="<%- word.id %>">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% })} else { %>
+          <div><h2>You dont have any words added yet</h2></div>
+          <div>Chrome Extension link</div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  //nooooooooooote WORDS I THINK BE STRIPPED FROM THY ACCENTS
+  const filter = document.getElementById('filter');
+  const wordBoxes = document.querySelectorAll('.word-box');
+  const searchInput = document.getElementById('search');
+
+  // Define a function to update the display of word boxes based on filter and search criteria
+  function updateDisplay() {
+    const selectedValue = filter.value;
+    const searchText = searchInput.value.trim().toLowerCase();
+
+    let totalCount = 0;
+
+    wordBoxes.forEach(wordBox => {
+      const knownStatus = wordBox.getAttribute('data-known');
+      const wordText = wordBox.querySelector('.word').textContent.trim().toLowerCase();
+
+      const isMatchingSearch = wordText.includes(searchText);
+      const isMatchingFilter =
+        selectedValue === 'A' || (selectedValue === 'K' && knownStatus === 'on') || (selectedValue === 'UK' && knownStatus !== 'on');
+
+      if (isMatchingSearch && isMatchingFilter) {
+        wordBox.style.display = 'block';
+        totalCount++;
+      } else {
+        wordBox.style.display = 'none';
+      }
+    });
+
+    // Update the counts in the HTML
+
+    if (selectedValue === 'A') {
+      document.getElementById('totalCount').textContent = `Total Words: ${totalCount}`;
+    } else if (selectedValue === 'K') {
+      document.getElementById('totalCount').textContent = `Total Known Words: ${totalCount}`;
+    } else if (selectedValue === 'UK') {
+      document.getElementById('totalCount').textContent = `Total Unknown Words: ${totalCount}`;
+    }
+  }
+
+  // Update display when search input changes
+  searchInput.addEventListener('input', updateDisplay);
+
+  // Update display when filter changes
+  filter.addEventListener('change', updateDisplay);
+
+  //Sorting
+
+  const sortAlphabetical = document.getElementById('sortAlphabetical');
+  const sortTimestamp = document.getElementById('sortTimestamp');
+  const sortDropdown = document.getElementById('sortDropdown');
+  const initialSortMode = document.getElementById('initialSortMode').value;
+
+  let currentSortMode = initialSortMode;
+  let currentSortOrder = 'ascending';
+
+  sortAlphabetical.addEventListener('click', () => {
+    if (currentSortMode === 'alphabetical') {
+      toggleSortOrder();
+    } else {
+      currentSortMode = 'alphabetical';
+      currentSortOrder = 'ascending';
+    }
+    updateSort();
+    sortWordBoxes();
+  });
+
+  sortTimestamp.addEventListener('click', () => {
+    if (currentSortMode === 'timestamp') {
+      toggleSortOrder();
+    } else {
+      currentSortMode = 'timestamp';
+      currentSortOrder = 'ascending';
+    }
+    updateSort();
+    sortWordBoxes();
+  });
+  function toggleSortOrder() {
+    if (currentSortOrder === 'ascending') {
+      currentSortOrder = 'descending';
+    } else {
+      currentSortOrder = 'ascending';
+    }
+  }
+
+  function updateSort() {
+    if (currentSortMode === 'default') {
+      sortDropdown.textContent = 'Sort Mode';
+    } else if (currentSortMode === 'alphabetical') {
+      sortDropdown.textContent = 'Sort Mode: ABC';
+    } else if (currentSortMode === 'timestamp') {
+      sortDropdown.textContent = 'Sort Mode: Time';
+    }
+  }
+
+  function sortWordBoxes() {
+    console.log(currentSortOrder);
+    const wordBoxesContainer = document.querySelector('.word-list');
+    const sortedWordBoxes = Array.from(wordBoxes).sort((a, b) => {
+      const aValue = a.getAttribute('data-timestamp');
+      const bValue = b.getAttribute('data-timestamp');
+      if (currentSortMode === 'alphabetical') {
+        const aWord = a.querySelector('.word').textContent;
+        const bWord = b.querySelector('.word').textContent;
+
+        if (currentSortOrder === 'ascending') {
+          return aWord.localeCompare(bWord);
+        } else {
+          return bWord.localeCompare(aWord);
+        }
+      } else if (currentSortMode === 'timestamp') {
+        const aTimestamp = new Date(aValue).getTime();
+        const bTimestamp = new Date(bValue).getTime();
+
+        if (currentSortOrder === 'ascending') {
+          return aTimestamp - bTimestamp;
+        } else {
+          return bTimestamp - aTimestamp;
+        }
+      }
+
+      return 0; // Default case
+    });
+
+    // Clear existing word boxes and append sorted ones
+    while (wordBoxesContainer.firstChild) {
+      wordBoxesContainer.removeChild(wordBoxesContainer.firstChild);
+    }
+
+    sortedWordBoxes.forEach(box => {
+      wordBoxesContainer.appendChild(box);
+    });
+  }
+
+  // Initial sorting indicator update
+  updateSort();
+
+  //Add Form
+  const addWord = document.getElementById('addWord');
+  const addWordFeedback = document.getElementById('addWordFeedback');
+
+  addWord.addEventListener('submit', async event => {
+    event.preventDefault();
+
+    const formData = new FormData(addWord);
+    formData.forEach((value, key) => {
+      formData.set(key, value.trim());
+    });
+
+    try {
+      const response = await fetch('/words', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData)),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Display success message in the feedback container
+        addWordFeedback.innerHTML = '<p class="text-success">Word submitted successfully!</p>';
+
+        // Clear the form fields or reset the modal (if needed)
+        addWord.reset();
+      } else {
+        // Display error message in the feedback container
+        addWordFeedback.innerHTML = '<p class="text-danger">An error occurred. Please tryy again.</p>';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Display a generic error message in the feedback container
+      addWordFeedback.innerHTML = '<p class="text-danger">An error occurred. Please tryss again.</p>';
+    }
+  });
+
+  //edit form
+
+  const editFormBtns = document.querySelectorAll('.editWordBtn');
+  console.log(editFormBtns);
+
+  editFormBtns.forEach(editWordBtn => {
+    editWordBtn.addEventListener('click', async event => {
+      event.preventDefault();
+      const wordBox = editWordBtn.closest('.word-box');
+      const wordId = wordBox.getAttribute('data-word-id');
+      console.log(wordId);
+      const editForm = document.getElementById(`editWordForm-${wordId}`);
+      console.log(editForm);
+      const formData = new FormData(editForm);
+      formData.forEach((value, key) => {
+        formData.set(key, value.trim());
+      });
+      console.log([...formData.entries()]);
+      // Fetch and send the update request
+      try {
+        const response = await fetch(`/words/${wordId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(formData)),
+        });
+        console.log(response);
+        const data = await response.json();
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          // Display an error message within the word box or form
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Display a generic error message within the word box or form
+      }
+    });
+  });
+  const deleteWordBtns = document.querySelectorAll('.deleteWordBtn');
+
+  deleteWordBtns.forEach(deleteWordBtn => {
+    deleteWordBtn.addEventListener('click', async event => {
+      const wordId = deleteWordBtn.getAttribute('data-word-id');
+
+      // Fetch and send the delete request
+      try {
+        const response = await fetch(`/words/${wordId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          // Display an error message within the confirmation modal
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Display a error message within the confirmation modal
+      }
+    });
+  });
+
+  //ANKI
+
+  function invoke(action, version, params = {}) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener('error', () => reject('failed to issue request'));
+      xhr.addEventListener('load', () => {
+        try {
+          const response = JSON.parse(xhr.responseText);
+          if (Object.getOwnPropertyNames(response).length != 2) {
+            throw 'response has an unexpected number of fields';
+          }
+          if (!response.hasOwnProperty('error')) {
+            throw 'response is missing required error field';
+          }
+          if (!response.hasOwnProperty('result')) {
+            throw 'response is missing required result field';
+          }
+          if (response.error) {
+            throw response.error;
+          }
+          resolve(response.result);
+        } catch (e) {
+          reject(e);
+        }
+      });
+
+      xhr.open('POST', 'http://localhost:8765/');
+      xhr.send(JSON.stringify({ action, version, params }));
+    });
+  }
+
+  const pushAnki = document.querySelector('.pushAnki');
+  const username = pushAnki.getAttribute('data-username');
+  const ankiModel = {
+    action: 'createModel',
+    version: 6,
+    params: {
+      modelName: 'Irish Anki Model',
+      inOrderFields: ['word', 'definition', 'grammar'],
+      css: 'Optional CSS with default to builtin css',
+      isCloze: false,
+      cardTemplates: [
+        {
+          Name: 'My Card 1',
+          Front: 'Front html {{word}}',
+          Back: 'Back html  {{definition}} , {{grammar}}',
+        },
+      ],
+    },
+  };
+  pushAnki.addEventListener('click', async function () {
+    const notes = [];
+    const updateNoteIds = [];
+    console.log('pushAnki clicked');
+    wordBoxes.forEach(async function (wordBox) {
+      const id = wordBox.getAttribute('data-word-id');
+      const word = wordBox.querySelector('.word').textContent;
+      const definition = wordBox.querySelector('.definition').textContent;
+      const grammar = wordBox.querySelector('.grammar').textContent;
+      const editUpdate = wordBox.getAttribute('data-edit');
+      const note = {
+        deckName: `${username} Irish Deck`,
+        modelName: 'Irish Anki Model',
+        fields: {
+          word: word,
+          definition: definition,
+          grammar: grammar,
+        },
+        tags: [id],
+      };
+      console.log('edit found', editUpdate);
+      if (editUpdate == 0) {
+        const noteId = await invoke('findNotes', 6, { query: `tag:${id}` });
+        const updateNote = {
+          id: noteId[0],
+          fields: {
+            word: word,
+            definition: definition,
+            grammar: grammar,
+          },
+        };
+        const updatedNote = await invoke('updateNote', 6, { note: updateNote });
+        console.log('update note response', updatedNote);
+        if (updatedNote === null) {
+          console.log('success');
+          updateNoteIds.push(id);
+        }
+      }
+      notes.push(note);
+    });
+    console.log('updated', updateNoteIds);
+
+    const modelExists = await invoke('modelFieldNames', 6, { modelName: `Irish Anki Model` });
+    if (modelExists) {
+      console.log('model exists');
+    } else {
+      await invoke(ankiModel.action, ankiModel.version, ankiModel.params);
+    }
+    try {
+      await invoke('createDeck', 6, { deck: `${username} Irish Deck` }); //creates deck, doesnt overwrite/create if deck already exists
+      if (updateNoteIds.length > 0) {
+        console.log('updating db tag');
+        //Tell db edits have been updated so change editUpdated tracker to 1
+        const updateEditResponse = await fetch(`/words/editTag`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ wordIds: updateNoteIds }),
+        });
+        if (updateEditResponse.ok) {
+          console.log('editUpdated values updated successfully for the pushed words.');
+        } else {
+          console.error('Failed to update editUpdated values for the pushed words.');
+        }
+      }
+      const notesCreated = await invoke('addNotes', 6, { notes: notes });
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  });
+</script>
