@@ -92,7 +92,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="addWord" method="POST" action="http://localhost:8080/words">
+            <form id="addWord" method="POST" action="/words">
               <label for="text">Enter Text</label>
               <input type="text" id="text" name="text" class="form-control" />
               <label for="definition">Enter Definition</label>
@@ -107,7 +107,7 @@
           </div>
           <div class="modal-footer">
             <div id="addWordFeedback" class="mt-2 me-auto"></div>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary closeAdd" data-bs-dismiss="modal">Close</button>
             <button type="submit" form="addWord" class="btn btn-primary submit">Submit</button>
           </div>
         </div>
