@@ -19,7 +19,7 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 
 const app = express();
-const port = env.PORT || 'http://localhost:8080';
+const port = env.PORT || 8080;
 
 app.engine('ejs', ejsMate); //ejs template engine
 app.set('views', path.join(__dirname, 'views')); //setting default view path, __dirname is the directory in which the currently executing script resides
@@ -28,13 +28,7 @@ app.set('view engine', 'ejs'); //so you can render templates
 const secret = crypto.randomBytes(32).toString('hex') || 'thisisasecret';
 
 app.use(express.static('public'));
-app.use(
-  session({
-    secret: secret,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
