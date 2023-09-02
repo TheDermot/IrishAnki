@@ -34,18 +34,6 @@ passport.use(
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
-      // db.get('SELECT * FROM users WHERE username = ?', username, function (err, row) {
-      //   if (err) {
-      //     return done(err);
-      //   }
-      //   if (!row) {
-      //     return done(null, false, { message: 'Incorrect username or password.' });
-      //   }
-      //   if (row.password !== password) {
-      //     return done(null, false, { message: 'Incorrect password.' });
-      //   }
-      //   return done(null, row);
-      // });
       db.get('SELECT * FROM users WHERE googleId = ?', [profile.id], (err, row) => {
         if (err) return done(err);
         if (!row) {
