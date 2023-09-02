@@ -19,7 +19,7 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 
 const app = express();
-const port = 'https://irish-anki-f255899fa450.herokuapp.com/' || 'http://localhost:8080';
+const port = env.PORT || 'http://localhost:8080';
 
 app.engine('ejs', ejsMate); //ejs template engine
 app.set('views', path.join(__dirname, 'views')); //setting default view path, __dirname is the directory in which the currently executing script resides
