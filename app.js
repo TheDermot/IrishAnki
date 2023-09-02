@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+const env = process.env;
+
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -11,18 +16,21 @@ const words_routes = require('./routes/words');
 const flash = require('connect-flash');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
 
 const app = express();
-const port = 8080;
+const port = 'https://irish-anki-f255899fa450.herokuapp.com/' || 'http://localhost:8080';
 
 app.engine('ejs', ejsMate); //ejs template engine
 app.set('views', path.join(__dirname, 'views')); //setting default view path, __dirname is the directory in which the currently executing script resides
 app.set('view engine', 'ejs'); //so you can render templates
 
+const secret = crypto.randomBytes(32).toString('hex') || 'thisisasecret';
+
 app.use(express.static('public'));
 app.use(
   session({
-    secret: 'secret-key',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
   })
@@ -33,7 +41,7 @@ app.use(bodyParser.json());
 const sessionConfig = {
   name: 'session',
   store: new SQLiteStore(),
-  secret: 'sdadsasdas',
+  secret: secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -70,5 +78,5 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database.db');
 
 app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+  console.log(`App listening at ${port}`);
 });
