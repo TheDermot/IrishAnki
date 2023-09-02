@@ -4,7 +4,6 @@ const passport = require('passport');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-const env = process.env;
 
 // const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
@@ -24,6 +23,7 @@ db.serialize(() => {
 // const userDb = 'CREATE TABLE IF NOT EXISTS users (username, password, id INTEGER PRIMARY KEY AUTOINCREMENT)';
 // const createUser = 'INSERT INTO users (username, password, id) VALUES(?,?,?)';
 // db.run(userDb);
+const env = process.env;
 
 passport.use(
   new GoogleStrategy(
