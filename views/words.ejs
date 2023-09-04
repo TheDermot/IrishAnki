@@ -523,6 +523,8 @@
     },
   };
   pushAnki.addEventListener('click', async function () {
+    const permission = await invoke('requestPermission', 6);
+    console.log(permission);
     const notes = [];
     const updateNoteIds = [];
     console.log('pushAnki clicked');
