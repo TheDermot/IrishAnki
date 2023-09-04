@@ -9,7 +9,7 @@ const db = new sqlite3.Database('database.db');
 router.post('/', (req, res) => {
   console.log(req);
   console.log(req.headers.googleid);
-  const userGoogleId = req.headers.googleid;
+  const userGoogleId = req.headers.googleid || req.user.googleId;
   const newWord = req.body.text;
   const definition = req.body.definition;
   const grammar = req.body.grammar;

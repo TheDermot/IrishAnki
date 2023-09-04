@@ -120,7 +120,7 @@
           <button type="button" class="btn btn-primary pushAnki col-auto" data-username="<%= user.name %>">Push to Anki</button>
         </div>
         <div class="word-list">
-          <% if(words) { words.reverse(); words.forEach(word => { %>
+          <% if(words && words.length > 0) { words.reverse(); words.forEach(word => { %>
           <div
             class="word-box card mt-4"
             data-edit="<%- word.editUpdated %>"
@@ -224,8 +224,10 @@
             </div>
           </div>
           <% })} else { %>
-          <div><h2>You dont have any words added yet</h2></div>
-          <div>Chrome Extension link</div>
+          <div class="col mt-5 align-self-center text-center">
+            <div><h2>You dont have any words added yet</h2></div>
+            <div>Chrome Extension link</div>
+          </div>
           <% } %>
         </div>
       </div>
