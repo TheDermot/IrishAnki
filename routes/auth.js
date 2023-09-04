@@ -74,16 +74,10 @@ router.get(
   '/google',
   passport.authenticate('google', { scope: ['email', 'profile'] }, (req, res) => {})
 );
-// router.get(
-//   '/google/callback',
-//   passport.authenticate('google', {
-//     successRedirect: '/auth/google/success',
-//     failureRedirect: '/login',
-//   })
-// );
+
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   console.log(req.user);
-  res.redirect(`/${req.user.googleId}/known_words`);
+  res.redirect(`/`);
 });
 
 router.get('/profile', (req, res) => {
