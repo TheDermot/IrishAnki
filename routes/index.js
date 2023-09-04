@@ -28,6 +28,7 @@ router.get('/:id/known_words', function (req, res) {
     const userId = req.params.id;
     const db = new sqlite3.Database('database.db');
     const wordsExist = "SELECT name FROM sqlite_master WHERE type='table' AND name='words'";
+    const initialSortMode = 'default';
 
     db.get(wordsExist, [], (err, row) => {
       if (err) {
@@ -45,7 +46,6 @@ router.get('/:id/known_words', function (req, res) {
           } else {
             // Render the EJS file and pass the fetched words and user info as data
             console.log(rows, 'rooooooooows');
-            const initialSortMode = 'default';
             res.render('words', {
               user: {
                 id: req.user.id,
@@ -59,13 +59,15 @@ router.get('/:id/known_words', function (req, res) {
         });
       } else {
         console.log("The 'words' table does not exist.");
+        const wordTemp = {};
         res.render('words', {
           user: {
             id: req.user.id,
             googleId: req.user.googleId,
             name: req.user.displayName,
           },
-          words: row,
+          words: wordTemp,
+          initialSortMode,
         });
       }
     });

@@ -68,9 +68,6 @@ app.use('/words', words_routes);
 
 const sqlite3 = require('sqlite3').verbose();
 
-// // Open the database connection
-const db = new sqlite3.Database('database.db');
-
 app.listen(port, () => {
   console.log(`App listening at ${port}`);
 });

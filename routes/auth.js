@@ -20,9 +20,7 @@ let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, err => {
 db.serialize(() => {
   db.run('CREATE TABLE IF NOT EXISTS users (googleId TEXT PRIMARY KEY, displayName TEXT)');
 });
-// const userDb = 'CREATE TABLE IF NOT EXISTS users (username, password, id INTEGER PRIMARY KEY AUTOINCREMENT)';
-// const createUser = 'INSERT INTO users (username, password, id) VALUES(?,?,?)';
-// db.run(userDb);
+
 const env = process.env;
 
 passport.use(
