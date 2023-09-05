@@ -21,7 +21,7 @@ router.get('/', function (req, res) {
 });
 router.get('/:id/known_words', function (req, res) {
   if (!req.user) {
-    // If the user is not authenticated, redirect to the login page
+    // If the user is not authenticated, redirect to the log in page
     res.redirect('/auth/login');
   } else {
     // If the user is authenticated, render the home page with user data
