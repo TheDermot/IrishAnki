@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg">
   <div class="container">
-    <a class="navbar-brand" href="#">Irish Anki</a>
+    <a class="navbar-brand" href="/">Irish Anki</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -41,7 +41,6 @@
     </div>
   </div>
 </nav>
-<!-- User page can show recently added words-->
 <section class="section">
   <div class="container">
     <div class="justify-content-center row">
@@ -56,7 +55,7 @@
                 </div>
               </div>
               <div class="col-lg-3">
-                <div class="">
+                <div class="mt-3 mt-lg-0">
                   <select class="form-select" data-trigger="true" name="choices-single-location" id="filter" aria-label="Default select example">
                     <option value="A">All Words</option>
                     <option value="K">Known Words</option>
@@ -64,7 +63,7 @@
                   </select>
                 </div>
               </div>
-              <div class="col-lg-auto">
+              <div class="col-6 col-lg-auto mt-3 mt-lg-0">
                 <div class="dropdown">
                   <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     Sort
@@ -75,7 +74,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-lg-auto ms-auto">
+              <div class="col-6 col-sm-auto ms-auto mt-3 mt-lg-0 d-flex justify-content-end">
                 <button type="button" class="btn btn-primary newWord" data-bs-toggle="modal" data-bs-target="#addWordModal">Add New Word</button>
               </div>
             </div>
@@ -117,7 +116,9 @@
       <div class="col-lg-12">
         <div class="row me-0">
           <div class="word-count col-auto"><span id="totalCount">Total Words: <%= words.length %></span></div>
-          <button type="button" class="btn btn-primary pushAnki col-auto" data-username="<%= user.name %>">Push to Anki</button>
+          <button type="button" class="btn btn-primary pushAnki col-auto ms-md-0" style="margin-left: 12px" data-username="<%= user.name %>">
+            Push to Anki
+          </button>
         </div>
         <div class="word-list">
           <% if(words && words.length > 0) { words.reverse(); words.forEach(word => { %>

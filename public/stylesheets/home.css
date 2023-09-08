@@ -2,6 +2,37 @@
   --gold: #a58c47;
   --green: #2e5f3d;
 }
+html {
+  font-size: 10px;
+}
+@media (max-width: 425px) {
+  html {
+    font-size: 12px;
+  }
+}
+@media (max-width: 767px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  html {
+    font-size: 16px;
+  }
+}
+@media (min-width: 1442px) {
+  html {
+    font-size: 23px;
+  }
+}
+
 .page-background {
   background-image: url('https://i.imgur.com/cAekhtv.jpg');
   background-repeat: no-repeat;
@@ -14,11 +45,17 @@
 h1 {
   color: var(--gold);
   font-weight: 500;
-  font-size: 3rem;
+  font-size: 2.8rem;
 }
 p {
   color: aliceblue;
   width: 75%;
+  font-size: 1.3rem;
+}
+@media (max-width: 992px) {
+  p {
+    width: 85%;
+  }
 }
 .nav-link {
   color: antiquewhite;
@@ -26,7 +63,7 @@ p {
 }
 .navbar-brand {
   color: antiquewhite;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 .btn-primary {
   background-color: var(--gold);

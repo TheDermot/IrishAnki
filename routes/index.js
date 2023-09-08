@@ -1,13 +1,19 @@
 const express = require('express');
 
 const router = express.Router();
-const sqlite3 = require('sqlite3').verbose();
-
+// const sqlite3 = require('sqlite3').verbose();
+const { createClient } = require('@libsql/client');
+const client = createClient({
+  // url: 'file:db.sql',
+  url: 'libsql://irish-anki-thedermot.turso.io',
+  authToken:
+    'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTM5OTE4NzUsImlkIjoiZjI5ZTc5OTEtNGJlYS0xMWVlLTgwZDUtMTJiNWY3OWJkNDUzIn0.1HSRgEOgs_Q0m_HjDhOeYQB-jMhGfY1mjzRWC_xrT6JYj1D705XIUe7aSbj87mG98xN5rRCDQ1iRleYVFX-4CA',
+});
 router.get('/', function (req, res) {
-  //create home page later
   if (!req.user) {
-    // If the user is not authenticated, redirect to the login page
-    res.redirect('/auth/login');
+    res.render('index', {
+      user: {},
+    });
   } else {
     console.log(req);
     res.render('index', {
@@ -19,46 +25,39 @@ router.get('/', function (req, res) {
     });
   }
 });
-router.get('/:id/known_words', function (req, res) {
+router.get('/:id/known_words', async function (req, res) {
   if (!req.user) {
     // If the user is not authenticated, redirect to the log in page
     res.redirect('/auth/login');
   } else {
     // If the user is authenticated, render the home page with user data
     const userId = req.params.id;
-    const db = new sqlite3.Database('database.db');
-    const wordsExist = "SELECT name FROM sqlite_master WHERE type='table' AND name='words'";
     const initialSortMode = 'default';
 
-    db.get(wordsExist, [], (err, row) => {
-      if (err) {
-        console.error(err.message);
-        return;
-      }
-
-      if (row) {
+    // const db = new sqlite3.Database('database.db');
+    const wordsExist = "SELECT name FROM sqlite_master WHERE type='table' AND name='words'";
+    try {
+      const rs = await client.execute(wordsExist);
+      console.log('check words table is filled', rs);
+      if (rs.rows.length > 0) {
         console.log("The 'words' table exists.");
-        db.all('SELECT * FROM words WHERE googleId = ?', [userId], (err, rows) => {
-          if (err) {
-            // Handle any errors
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-          } else {
-            // Render the EJS file and pass the fetched words and user info as data
-            console.log(rows, 'rooooooooows');
-            res.render('words', {
-              user: {
-                id: req.user.id,
-                googleId: req.user.googleId,
-                name: req.user.displayName,
-              },
-              words: rows,
-              initialSortMode,
-            });
-          }
+        const rs2 = await client.execute({
+          sql: 'select * from words where googleId = ?',
+          args: [userId],
+        });
+        // Render the EJS file and pass the fetched words and user info as data
+        console.log('select all words', rs2);
+        res.render('words', {
+          user: {
+            id: req.user.id,
+            googleId: req.user.googleId,
+            name: req.user.displayName,
+          },
+          words: rs2.rows,
+          initialSortMode,
         });
       } else {
-        console.log("The 'words' table does not exist.");
+        console.log("The 'words' table does not exist/is empty");
         const wordTemp = {};
         res.render('words', {
           user: {
@@ -70,7 +69,51 @@ router.get('/:id/known_words', function (req, res) {
           initialSortMode,
         });
       }
-    });
+    } catch (err) {
+      console.log(err);
+    }
+
+    // db.get(wordsExist, [], (err, row) => {
+    //   if (err) {
+    //     console.error(err.message);
+    //     return;
+    //   }
+
+    //   if (row) {
+    //     console.log("The 'words' table exists.");
+    //     db.all('SELECT * FROM words WHERE googleId = ?', [userId], (err, rows) => {
+    //       if (err) {
+    //         // Handle any errors
+    //         console.error(err);
+    //         res.status(500).send('Internal Server Error');
+    //       } else {
+    //         // Render the EJS file and pass the fetched words and user info as data
+    //         console.log(rows, 'rooooooooows');
+    //         res.render('words', {
+    //           user: {
+    //             id: req.user.id,
+    //             googleId: req.user.googleId,
+    //             name: req.user.displayName,
+    //           },
+    //           words: rows,
+    //           initialSortMode,
+    //         });
+    //       }
+    //     });
+    //   } else {
+    //     console.log("The 'words' table does not exist.");
+    //     const wordTemp = {};
+    //     res.render('words', {
+    //       user: {
+    //         id: req.user.id,
+    //         googleId: req.user.googleId,
+    //         name: req.user.displayName,
+    //       },
+    //       words: wordTemp,
+    //       initialSortMode,
+    //     });
+    //   }
+    // });
   }
 });
 
