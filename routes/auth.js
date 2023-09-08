@@ -8,8 +8,7 @@ const { createClient } = require('@libsql/client');
 const client = createClient({
   // url: 'file:db.sql',
   url: 'libsql://irish-anki-thedermot.turso.io',
-  authToken:
-    'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTM5OTE4NzUsImlkIjoiZjI5ZTc5OTEtNGJlYS0xMWVlLTgwZDUtMTJiNWY3OWJkNDUzIn0.1HSRgEOgs_Q0m_HjDhOeYQB-jMhGfY1mjzRWC_xrT6JYj1D705XIUe7aSbj87mG98xN5rRCDQ1iRleYVFX-4CA',
+  authToken: process.env.authToken,
 });
 
 // const LocalStrategy = require('passport-local').Strategy;
