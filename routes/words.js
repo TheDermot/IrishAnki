@@ -10,7 +10,7 @@ const { createClient } = require('@libsql/client');
 const client = createClient({
   // url: 'file:db.sql',
   url: 'libsql://irish-anki-thedermot.turso.io',
-  authToken: process.env.token,
+  authToken: process.env.authToken,
 });
 
 router.post('/', async (req, res) => {
